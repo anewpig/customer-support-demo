@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: ai-customer-support-mvp
+    runtime: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: python3 server.py
+    healthCheckPath: /healthz
+    envVars:
+      - key: OPENAI_MODEL
+        value: gpt-4.1-mini
+      - key: OPENAI_EMBEDDING_MODEL
+        value: text-embedding-3-small

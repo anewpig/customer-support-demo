@@ -1,0 +1,46 @@
+[
+  {
+    "order_id": "ORD-1001",
+    "customer_name": "王小明",
+    "customer_phone_last4": "4321",
+    "status": "已成立",
+    "shipping_status": "已出貨",
+    "tracking_number": "TCAT88660001",
+    "payment_status": "已付款",
+    "invoice_type": "電子發票",
+    "amount": 1280,
+    "items": [
+      "經典白T x1",
+      "牛仔外套 x1"
+    ]
+  },
+  {
+    "order_id": "ORD-1002",
+    "customer_name": "陳小美",
+    "customer_phone_last4": "8765",
+    "status": "處理中",
+    "shipping_status": "備貨中",
+    "tracking_number": "",
+    "payment_status": "已付款",
+    "invoice_type": "公司戶發票",
+    "amount": 890,
+    "items": [
+      "保溫隨行杯 x2"
+    ]
+  },
+  {
+    "order_id": "ORD-1003",
+    "customer_name": "林志豪",
+    "customer_phone_last4": "2468",
+    "status": "已完成",
+    "shipping_status": "已送達",
+    "tracking_number": "TCAT88660003",
+    "payment_status": "已付款",
+    "invoice_type": "電子發票",
+    "amount": 2340,
+    "items": [
+      "旅行後背包 x1",
+      "收納袋組 x1"
+    ]
+  }
+]

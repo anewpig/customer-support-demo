@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SupportOS Staff Login</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body class="login-body">
+    <div class="page-shell login-shell">
+      <nav class="topbar">
+        <div class="brand-lockup">
+          <div class="brand-mark">S</div>
+          <div>
+            <p class="brand-kicker">Internal Operations</p>
+            <strong class="brand-name">SupportOS Console</strong>
+          </div>
+        </div>
+        <div class="topbar-status">
+          <a class="top-pill subtle" href="index.html">Customer View</a>
+        </div>
+      </nav>
+
+      <main class="login-layout">
+        <section class="login-panel login-copy-panel">
+          <p class="eyebrow">Staff Access</p>
+          <h1>登入客服人員操作台</h1>
+          <p class="hero-copy">
+            進入內部工作台後，你可以查看待人工案件、使用 AI 工單摘要、搜尋訂單資料，並找出 FAQ 尚未覆蓋的問題。
+          </p>
+          <div class="login-feature-list">
+            <article class="login-feature-item">
+              <strong>工單摘要與建議回覆</strong>
+              <p>快速理解案件上下文，縮短客服接手時間。</p>
+            </article>
+            <article class="login-feature-item">
+              <strong>FAQ 缺口分析</strong>
+              <p>看出哪些問題最常落空，方便補強知識庫。</p>
+            </article>
+            <article class="login-feature-item">
+              <strong>訂單列表與搜尋</strong>
+              <p>透過訂單編號、姓名或手機末四碼直接比對資料。</p>
+            </article>
+          </div>
+        </section>
+
+        <section class="login-panel login-form-panel">
+          <div class="panel-heading login-heading">
+            <div>
+              <p class="label">Sign In</p>
+              <h2>Staff Login</h2>
+              <p class="panel-subcopy">帳號密碼來自專案根目錄 `.env` 的 `ADMIN_USERNAME` 與 `ADMIN_PASSWORD`。</p>
+            </div>
+          </div>
+
+          <form id="admin-login-form" class="login-form">
+            <input id="login-username" type="text" placeholder="帳號" autocomplete="username" />
+            <input id="login-password" type="password" placeholder="密碼" autocomplete="current-password" />
+            <button type="submit" class="primary-btn">登入操作台</button>
+          </form>
+
+          <p id="login-error" class="login-error" hidden></p>
+          <p class="login-help">如果你是 demo 使用者，請先確認 `.env` 已經設定好對應的內部帳密。</p>
+        </section>
+      </main>
+    </div>
+
+    <script src="login.js"></script>
+  </body>
+</html>

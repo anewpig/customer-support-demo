@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SupportOS Internal Console</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body class="admin-body">
+    <div class="page-shell">
+      <nav class="topbar">
+        <div class="brand-lockup">
+          <div class="brand-mark">S</div>
+          <div>
+            <p class="brand-kicker">Internal Operations</p>
+            <strong class="brand-name">SupportOS Console</strong>
+          </div>
+        </div>
+        <div class="topbar-status">
+          <a class="top-pill subtle" href="index.html">Customer View</a>
+          <span id="admin-user" class="top-pill">Staff Only</span>
+          <button id="logout-button" class="top-pill top-pill-button" type="button">登出</button>
+        </div>
+      </nav>
+
+      <header class="hero admin-hero admin-hero-shell">
+        <div class="hero-copy-block admin-hero-copy">
+          <p class="eyebrow">Operations Dashboard</p>
+          <h1>客服人員操作台</h1>
+          <p class="hero-copy">
+            查看待人工處理案件、維護 FAQ 知識庫，並管理 AI 客服使用的向量索引與檢索品質。
+          </p>
+        </div>
+        <div class="hero-card status-card admin-status-card">
+          <div class="status-card-head">
+            <span>Runtime Status</span>
+            <span class="live-dot"></span>
+          </div>
+          <strong id="runtime-endpoint">127.0.0.1:8000</strong>
+          <small id="runtime-mode">無外部依賴，開箱可跑</small>
+          <small id="vector-mode">vector db not ready</small>
+        </div>
+      </header>
+
+      <main class="admin-layout">
+        <section class="panel admin-panel admin-panel-full admin-stage">
+          <div class="panel-heading">
+            <div>
+              <p class="label">Operations Console</p>
+              <h2>客服人員操作台</h2>
+              <p class="panel-subcopy">查看案件量、處理待人工案件，並即時維護 FAQ 知識庫與向量索引。</p>
+            </div>
+          </div>
+
+          <div class="stats-grid">
+            <div class="stat-card admin-stat-card">
+              <span>FAQ 條目</span>
+              <strong id="faq-count">0</strong>
+              <small>目前知識庫已收錄的可檢索條目</small>
+            </div>
+            <div class="stat-card admin-stat-card">
+              <span>總對話數</span>
+              <strong id="conversation-count">0</strong>
+              <small>顧客與 AI 的歷史互動累計</small>
+            </div>
+            <div class="stat-card highlight admin-stat-card">
+              <span>待人工處理</span>
+              <strong id="handoff-count">0</strong>
+              <small>需要客服人員接手追蹤的案件</small>
+            </div>
+          </div>
+
+          <div class="admin-layout-grid">
+            <div class="admin-main-column">
+              <section class="subpanel roomy-panel">
+                <div class="subpanel-header">
+                  <div>
+                    <p class="subpanel-kicker">Workflow Queue</p>
+                    <h3>人工待處理案件</h3>
+                  </div>
+                  <div class="header-actions">
+                    <button id="reindex-vectors" class="secondary-btn">重建向量索引</button>
+                    <button id="refresh-dashboard" class="secondary-btn">重新整理</button>
+                  </div>
+                </div>
+                <div id="handoff-list" class="ticket-list"></div>
+              </section>
+
+              <section class="subpanel assistant-panel">
+                <div class="subpanel-header">
+                  <div>
+                    <p class="subpanel-kicker">AI Assist</p>
+                    <h3>工單摘要與 AI 回覆建議</h3>
+                  </div>
+                  <span id="assistant-provider" class="pill">尚未選擇工單</span>
+                </div>
+                <div class="assistant-grid">
+                  <article class="assistant-block">
+                    <span class="assistant-label">工單摘要</span>
+                    <div id="assistant-summary" class="assistant-text empty-state">
+                      從上方待處理案件選擇一筆工單後，這裡會顯示 AI 協助整理的案件摘要。
+                    </div>
+                  </article>
+                  <article class="assistant-block">
+                    <div class="assistant-block-head">
+                      <span class="assistant-label">建議回覆</span>
+                      <button id="copy-assistant-reply" type="button" class="secondary-btn assistant-copy-btn">一鍵複製</button>
+                    </div>
+                    <div id="assistant-reply" class="assistant-text empty-state">
+                      選擇工單後，系統會提供一段可交給客服人員參考的回覆草稿。
+                    </div>
+                  </article>
+                </div>
+              </section>
+
+              <div class="admin-grid split-grid">
+                <section class="subpanel">
+                  <div class="subpanel-header">
+                    <div>
+                      <p class="subpanel-kicker">Conversations</p>
+                      <h3>聊天紀錄頁</h3>
+                    </div>
+                  </div>
+                  <div id="conversation-list" class="conversation-list"></div>
+                </section>
+
+                <section class="subpanel">
+                  <div class="subpanel-header">
+                    <div>
+                      <p class="subpanel-kicker">Session Detail</p>
+                      <h3>Session 對話明細</h3>
+                    </div>
+                  </div>
+                  <div id="session-history" class="session-history empty-state">點選左側任一筆對話後，這裡會顯示完整聊天紀錄。</div>
+                </section>
+              </div>
+
+              <section class="subpanel faq-table-panel">
+                <div class="subpanel-header">
+                  <div>
+                    <p class="subpanel-kicker">Knowledge Base</p>
+                    <h3>知識庫內容</h3>
+                  </div>
+                </div>
+                <div id="faq-list" class="faq-list"></div>
+              </section>
+            </div>
+
+            <aside class="admin-side-column">
+              <section class="subpanel sticky-side-panel">
+                <div class="subpanel-header">
+                  <div>
+                    <p class="subpanel-kicker">Knowledge Ops</p>
+                    <h3>新增 FAQ</h3>
+                  </div>
+                </div>
+                <form id="faq-form" class="faq-form">
+                  <div class="form-row">
+                    <input id="faq-id" type="text" placeholder="FAQ-006" />
+                    <input id="faq-category" type="text" placeholder="類別，例如 shipping" />
+                  </div>
+                  <input id="faq-question" type="text" placeholder="問題" />
+                  <textarea id="faq-answer" rows="4" placeholder="回答內容"></textarea>
+                  <input id="faq-keywords" type="text" placeholder="關鍵字，以逗號分隔" />
+                  <button type="submit" class="primary-btn">新增知識</button>
+                </form>
+              </section>
+
+              <section class="subpanel admin-info-card">
+                <div class="subpanel-header">
+                  <div>
+                    <p class="subpanel-kicker">OpenAI Runtime</p>
+                    <h3>OpenAI 用量 / 額度狀態</h3>
+                  </div>
+                  <span id="openai-health-pill" class="pill">尚未檢查</span>
+                </div>
+                <p id="openai-health-message" class="panel-subcopy compact-subcopy">系統會顯示最近一次 OpenAI API 的成功或失敗狀態，若額度耗盡也會在這裡提示。</p>
+                <div class="openai-health-grid">
+                  <article class="guide-item openai-health-item">
+                    <strong>最近請求</strong>
+                    <p id="openai-last-kind">尚無紀錄</p>
+                  </article>
+                  <article class="guide-item openai-health-item">
+                    <strong>最近成功時間</strong>
+                    <p id="openai-last-success">尚無紀錄</p>
+                  </article>
+                  <article class="guide-item openai-health-item">
+                    <strong>最近 token usage</strong>
+                    <p id="openai-last-usage">尚無紀錄</p>
+                  </article>
+                  <article class="guide-item openai-health-item">
+                    <strong>最近錯誤</strong>
+                    <p id="openai-last-error">目前沒有錯誤</p>
+                  </article>
+                </div>
+              </section>
+
+              <section class="subpanel admin-info-card">
+                <div class="subpanel-header">
+                  <div>
+                    <p class="subpanel-kicker">FAQ Coverage</p>
+                    <h3>FAQ 缺口分析</h3>
+                  </div>
+                  <span id="faq-gap-count" class="pill">0 個缺口</span>
+                </div>
+                <p class="panel-subcopy compact-subcopy">整理近期沒有被 FAQ 穩定接住、或常轉人工的問題，方便你決定下一批知識庫要補什麼。</p>
+                <div id="faq-gap-list" class="gap-list">
+                  <p class="empty-state">整理中...</p>
+                </div>
+              </section>
+
+              <section class="subpanel admin-info-card">
+                <div class="subpanel-header">
+                  <div>
+                    <p class="subpanel-kicker">Orders</p>
+                    <h3>訂單列表頁</h3>
+                  </div>
+                </div>
+                <div class="order-search">
+                  <input id="orders-search" type="text" placeholder="搜尋單號、姓名或手機末四碼" />
+                </div>
+                <div id="orders-list" class="order-list">
+                  <p class="empty-state">載入中...</p>
+                </div>
+              </section>
+
+              <section class="subpanel admin-info-card">
+                <div class="subpanel-header">
+                  <div>
+                    <p class="subpanel-kicker">Ops Guide</p>
+                    <h3>客服處理提示</h3>
+                  </div>
+                </div>
+                <div class="guide-list">
+                  <article class="guide-item">
+                    <strong>查訂單前先驗證</strong>
+                    <p>顧客提供單號後，請再確認下單姓名或手機末四碼，避免直接暴露訂單內容。</p>
+                  </article>
+                  <article class="guide-item">
+                    <strong>工單狀態建議</strong>
+                    <p>`pending` 代表剛轉入，`in_progress` 代表客服已接手，`resolved` 代表問題已完成處理。</p>
+                  </article>
+                  <article class="guide-item">
+                    <strong>FAQ 補強時機</strong>
+                    <p>如果同類問題反覆出現，優先補 FAQ 或更新關鍵字，下一輪 AI 命中率會更穩。</p>
+                  </article>
+                </div>
+              </section>
+            </aside>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <template id="ticket-template">
+      <article class="ticket-card">
+        <div class="ticket-top">
+          <strong class="ticket-id"></strong>
+          <span class="ticket-time"></span>
+        </div>
+        <p class="ticket-message"></p>
+        <p class="ticket-response"></p>
+        <div class="ticket-meta"></div>
+        <div class="workflow-grid">
+          <input class="ticket-assigned" type="text" placeholder="指派客服，例如 Kelly" />
+          <select class="ticket-status">
+            <option value="pending">待處理</option>
+            <option value="in_progress">處理中</option>
+            <option value="resolved">已完成</option>
+          </select>
+        </div>
+        <textarea class="ticket-notes" rows="3" placeholder="客服備註"></textarea>
+        <div class="ticket-actions">
+          <button type="button" class="secondary-btn ticket-ai-btn">AI 協助整理</button>
+          <button type="button" class="secondary-btn ticket-history-btn">查看聊天紀錄</button>
+          <button type="button" class="primary-btn ticket-save-btn">儲存工單</button>
+        </div>
+      </article>
+    </template>
+
+    <script src="admin.js"></script>
+  </body>
+</html>

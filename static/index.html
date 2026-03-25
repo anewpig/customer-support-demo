@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SupportOS 客服中心</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body class="customer-body">
+    <div class="page-shell customer-shell">
+      <nav class="topbar">
+        <div class="brand-lockup">
+          <div class="brand-mark">S</div>
+          <div>
+            <p class="brand-kicker">Customer Support</p>
+            <strong class="brand-name">SupportOS</strong>
+          </div>
+        </div>
+        <div class="topbar-status">
+          <a class="top-pill subtle stealth-link" href="admin.html">Internal Console</a>
+        </div>
+      </nav>
+
+      <header class="customer-hero">
+        <div class="customer-hero-copy">
+          <p class="eyebrow">Smart Service Experience</p>
+          <h1>需要協助嗎？我們在這裡。</h1>
+          <p class="hero-copy">
+            你可以直接詢問出貨、退款、付款方式、優惠券或真人客服相關問題。系統會先從知識庫查找答案，再由 AI 客服整理成自然語句回覆你。
+          </p>
+        </div>
+        <div class="customer-hero-card">
+          <span class="customer-hero-label">客服服務項目</span>
+          <ul class="customer-service-list">
+            <li>訂單與出貨查詢</li>
+            <li>退款與退貨說明</li>
+            <li>付款與發票問題</li>
+            <li>真人客服轉接</li>
+          </ul>
+        </div>
+      </header>
+
+      <main class="customer-layout">
+        <section class="panel customer-chat-panel">
+          <div class="panel-heading">
+            <div>
+              <p class="label">Customer Chat</p>
+              <h2>顧客對話視窗</h2>
+              <p class="panel-subcopy">直接輸入你的問題，AI 客服會盡快協助你。</p>
+            </div>
+          </div>
+
+          <div class="prompt-bar">
+            <span class="prompt-label">熱門問題</span>
+            <div class="quick-dropdown">
+              <button type="button" class="quick-dropdown-trigger">常見問題</button>
+              <div class="quick-dropdown-menu">
+                <button type="button" class="quick-shortcut" data-message="如果商品有瑕疵，我可以退款嗎？">退款申請</button>
+                <button type="button" class="quick-shortcut" data-message="我的訂單多久會出貨？">運送查詢</button>
+                <button type="button" class="quick-shortcut" data-message="你們支援哪些付款方式？">付款方式</button>
+                <button type="button" class="quick-shortcut" data-message="我想轉真人客服">真人客服</button>
+                <button type="button" class="quick-shortcut" data-message="請幫我查 ORD-1001">查詢訂單</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="chat-surface">
+            <div id="chat-log" class="chat-log customer-chat-log">
+              <article class="message assistant">
+                <span class="badge">AI 客服</span>
+                <p>你好，歡迎來到客服中心。請告訴我你遇到的問題，我會先幫你查找可用的解決方式。</p>
+                <div class="message-time">現在</div>
+              </article>
+            </div>
+
+            <form id="chat-form" class="chat-form">
+              <div class="verification-row">
+                <input id="customer-name" type="text" placeholder="下單姓名（查訂單可填）" />
+                <input id="customer-phone-last4" type="text" maxlength="4" inputmode="numeric" placeholder="手機末四碼（查訂單可填）" />
+              </div>
+              <textarea
+                id="message-input"
+                rows="4"
+                placeholder="例如：我昨天刷卡下單了，請問多久會出貨？"
+              ></textarea>
+              <div class="composer-bar">
+                <p class="composer-note">如果需要更進一步的協助，我們也會安排真人客服接手處理。</p>
+                <button type="submit" class="primary-btn">送出問題</button>
+              </div>
+            </form>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script src="customer.js"></script>
+  </body>
+</html>
