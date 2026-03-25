@@ -12,6 +12,19 @@ class FakeOpenAIService:
     def is_enabled(self):
         return False
 
+    def get_runtime_status(self):
+        return {
+            "state": "disabled",
+            "enabled": False,
+            "quota_exhausted": False,
+            "last_error_code": None,
+            "last_error_message": None,
+            "last_http_status": None,
+            "last_success_at": None,
+            "last_request_kind": None,
+            "last_usage": {},
+        }
+
     def generate_customer_reply(self, **_kwargs):
         return None
 
@@ -167,6 +180,25 @@ class ChatServiceTests(unittest.TestCase):
         self.assertEqual(assistance["provider"], "local")
         self.assertTrue(assistance["summary"])
         self.assertTrue(assistance["suggested_reply"])
+
+    def test_get_status_normalizes_openai_runtime_when_key_is_enabled(self):
+        class EnabledOpenAIService(FakeOpenAIService):
+            def is_enabled(self):
+                return True
+
+        chat_service = ChatService(
+            self.config,
+            self.cleaning_service,
+            EnabledOpenAIService(),
+            self.vector_store_service,
+            self.sqlite_repository,
+        )
+
+        status = chat_service.get_status()
+
+        self.assertTrue(status["has_openai_key"])
+        self.assertTrue(status["openai_runtime"]["enabled"])
+        self.assertEqual(status["openai_runtime"]["state"], "idle")
 
 
 if __name__ == "__main__":

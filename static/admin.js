@@ -100,6 +100,16 @@ function setPillTone(element, tone) {
   }
 }
 
+function normalizeOpenAIRuntime(status = {}) {
+  const runtime = status.openai_runtime && typeof status.openai_runtime === "object" ? { ...status.openai_runtime } : {};
+  const hasOpenAIKey = Boolean(status.has_openai_key);
+  runtime.enabled = hasOpenAIKey || Boolean(runtime.enabled);
+  if (runtime.enabled && runtime.state === "disabled") {
+    runtime.state = "idle";
+  }
+  return runtime;
+}
+
 function renderOpenAIRuntime(runtime = {}) {
   if (!openaiHealthPill || !openaiHealthMessage || !openaiLastKind || !openaiLastSuccess || !openaiLastUsage || !openaiLastError) {
     return;
@@ -613,7 +623,7 @@ async function loadStatus() {
     vectorMode.textContent = data.vector_index_ready
       ? `vector db ready · ${data.vector_backend} · ${data.embedding_model} · ${data.vector_entries} entries`
       : `vector db not ready · ${data.vector_backend} · ${data.embedding_model}${data.vector_status_error ? ` · ${data.vector_status_error}` : ""}`;
-    renderOpenAIRuntime(data.openai_runtime || {});
+    renderOpenAIRuntime(normalizeOpenAIRuntime(data));
   } catch (_error) {
     runtimeEndpoint.textContent = window.location.host || "unknown";
     runtimeMode.textContent = "後端未連線";

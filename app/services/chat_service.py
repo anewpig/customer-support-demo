@@ -494,11 +494,20 @@ class ChatService:
         ready_state = ready_state_getter() if callable(ready_state_getter) else {}
         collection = self.vector_store_service.get_chroma_collection()
         vector_entries = collection.count() if collection is not None else len(self.vector_store.get("entries", []))
+        openai_enabled = self.openai_service.is_enabled()
         openai_runtime = self.openai_service.get_runtime_status() if hasattr(self.openai_service, "get_runtime_status") else {}
+        if not isinstance(openai_runtime, dict):
+            openai_runtime = {}
+        openai_runtime = {
+            **openai_runtime,
+            "enabled": openai_enabled,
+        }
+        if openai_enabled and openai_runtime.get("state") == "disabled":
+            openai_runtime["state"] = "idle"
         return {
-            "provider": "openai" if self.openai_service.is_enabled() else "local",
-            "model": self.config.openai_model if self.openai_service.is_enabled() else "local-rules",
-            "has_openai_key": self.openai_service.is_enabled(),
+            "provider": "openai" if openai_enabled else "local",
+            "model": self.config.openai_model if openai_enabled else "local-rules",
+            "has_openai_key": openai_enabled,
             "embedding_model": self.config.embedding_model,
             "vector_index_ready": self.vector_store_service.has_usable_vector_index(self.faq_items, self.vector_store),
             "vector_entries": vector_entries,
