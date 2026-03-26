@@ -27,7 +27,7 @@ pip install -r requirements.txt
 3. 複製環境變數檔
 
 ```bash
-cp .env.example .env
+cp .env.example
 ```
 
 4. 打開 `.env`，把下面這行改成自己的 OpenAI API key
