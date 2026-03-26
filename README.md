@@ -129,8 +129,8 @@ PORT=8766 python3 server.py
 
 如果 `.env` 沒有覆蓋，預設為：
 
-- Username: `admin`
-- Password: `supportos123`
+- Username: `123456`
+- Password: `654321`
 
 ## OpenAI 模式
 
