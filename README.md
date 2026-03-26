@@ -7,6 +7,63 @@
 
 一個可實際部署的 AI 智慧客服 demo，包含顧客端聊天介面、內部客服操作台、RAG、訂單查詢、工單流程與登入權限。
 
+## 給面試官的最快開啟方式
+
+這個專案建議使用 `Python 3.11`。
+
+1. 建立並啟用虛擬環境
+
+```bash
+python3.11 -m venv .venv
+source .venv/bin/activate
+```
+
+2. 安裝套件
+
+```bash
+pip install -r requirements.txt
+```
+
+3. 複製環境變數檔
+
+```bash
+cp .env.example .env
+```
+
+4. 打開 `.env`，把下面這行改成自己的 OpenAI API key
+
+```env
+OPENAI_API_KEY=your_openai_api_key
+```
+
+也就是說，請把 `your_openai_api_key` 換成自己的 key。若不更換，OpenAI 問答與 embedding 不會正常工作。
+
+5. 啟動專案
+
+```bash
+python server.py
+```
+
+或直接用虛擬環境的 Python：
+
+```bash
+./.venv/bin/python server.py
+```
+
+6. 打開頁面
+
+- 顧客頁：[http://127.0.0.1:8000](http://127.0.0.1:8000)
+- 登入頁：[http://127.0.0.1:8000/login.html](http://127.0.0.1:8000/login.html)
+
+7. 預設後台帳密
+
+- Username: `123456`
+- Password: `654321`
+
+注意：
+- 建議不要直接用系統的 `python3 server.py`
+- 請優先用 `.venv` 啟動，避免 Python 版本差異造成 SSL 或 OpenAI 連線問題
+
 ## Demo 重點
 
 - 顧客頁與內部客服頁分離
@@ -76,25 +133,45 @@
 
 ## 快速開始
 
-### 1. 安裝套件
+### 1. 建議 Python 版本
+
+- `Python 3.11`
+
+如果你的電腦有多個 Python 版本，建議先確認：
+
+```bash
+python3.11 --version
+```
+
+### 2. 建立虛擬環境
+
+```bash
+python3.11 -m venv .venv
+source .venv/bin/activate
+python --version
+```
+
+### 3. 安裝套件
 
 ```bash
 pip install -r requirements.txt
 ```
 
-開發工具：
+如果要開發或跑 lint / coverage：
 
 ```bash
 pip install -r requirements-dev.txt
 ```
 
-### 2. 建立 `.env`
+### 4. 建立 `.env`
 
 可直接複製 `.env.example`：
 
 ```bash
 cp .env.example .env
 ```
+
+接著請打開 `.env`，把 `OPENAI_API_KEY` 改成你自己的 key。
 
 範例：
 
@@ -104,14 +181,16 @@ OPENAI_MODEL=gpt-4.1-mini
 OPENAI_EMBEDDING_MODEL=text-embedding-3-small
 PORT=8000
 
-ADMIN_USERNAME=admin
-ADMIN_PASSWORD=supportos123
+ADMIN_USERNAME=123456
+ADMIN_PASSWORD=654321
 ```
 
-### 3. 啟動
+如果你沒有把 `your_openai_api_key` 換成自己的 key，系統雖然可以開啟，但 OpenAI 回覆與 embedding 會失敗或退回 fallback。
+
+### 5. 啟動
 
 ```bash
-python3 server.py
+python server.py
 ```
 
 打開：
@@ -122,7 +201,7 @@ python3 server.py
 如果要換埠：
 
 ```bash
-PORT=8766 python3 server.py
+PORT=8766 python server.py
 ```
 
 ## 預設帳密
@@ -215,4 +294,3 @@ pre-commit run --all-files
 - PostgreSQL / 雲端向量資料庫
 - 客服 SLA / 優先級
 - 操作紀錄與審計
-
