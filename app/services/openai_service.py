@@ -3,6 +3,8 @@ import re
 from datetime import datetime
 from urllib import error, request
 
+#取得現在時間，並回傳 ISO 格式字串。
+#主要拿來記錄「最後一次成功呼叫 API 的時間」。
 
 def utc_now():
     return datetime.now().isoformat(timespec="seconds")
@@ -10,6 +12,8 @@ def utc_now():
 
 class OpenAIService:
     def __init__(self, config):
+        #建立服務物件，存下設定。
+        #同時初始化 runtime_status，用來追蹤 API 現在是否可用、上次成功或失敗狀態、錯誤訊息、token usage 等。
         self.config = config
         self.runtime_status = {
             "state": "disabled" if not self.is_enabled() else "idle",
@@ -23,9 +27,13 @@ class OpenAIService:
             "last_usage": {},
         }
 
+    #檢查 OpenAI 功能有沒有啟用。
+    #本質上就是看 OPENAI_API_KEY 有沒有設定。
     def is_enabled(self):
         return bool(self.config.openai_api_key)
 
+    #當 API 呼叫成功時，更新執行狀態。
+    #會記錄成功時間、請求類型、HTTP 狀態、以及 usage 資訊。
     def _record_success(self, payload, request_kind):
         usage = payload.get("usage", {}) if isinstance(payload, dict) else {}
         self.runtime_status.update(
@@ -41,7 +49,8 @@ class OpenAIService:
                 "last_usage": usage if isinstance(usage, dict) else {},
             }
         )
-
+    #當 API 呼叫失敗時，更新錯誤狀態。
+    #也會判斷這是不是額度不足、帳務限制那類錯誤。
     def _record_error(self, *, message, error_code=None, http_status=None, request_kind=None):
         lowered_message = str(message or "").lower()
         quota_exhausted = (error_code or "") in {"insufficient_quota", "billing_hard_limit_reached"} or any(
@@ -59,6 +68,10 @@ class OpenAIService:
             }
         )
 
+    #這是核心的「送出 POST 請求到 OpenAI API」方法。
+    #它會組 request、送出 JSON、解析回應。
+    #如果成功，就呼叫 _record_success。
+    #如果 HTTP 錯誤或網路錯誤，就解析錯誤內容、呼叫 _record_error，再丟出 RuntimeError。
     def _post(self, path, body, request_kind="generic"):
         req = request.Request(
             f"{self.config.openai_base_url}{path}",
@@ -102,9 +115,14 @@ class OpenAIService:
             )
             raise RuntimeError(message) from exc
 
+    #取得目前 API 執行狀態的副本。
+    #給外部查看現在是正常、停用、錯誤還是額度耗盡。
     def get_runtime_status(self):
         return dict(self.runtime_status)
 
+    #把一批文字送去 /embeddings，取得向量 embedding。
+    #給 RAG / FAQ 相似度搜尋使用。
+    #如果沒設定 API key，會直接報錯。
     def embed_texts(self, texts):
         if not self.is_enabled():
             raise RuntimeError("OPENAI_API_KEY is not set.")
@@ -119,6 +137,12 @@ class OpenAIService:
         )
         return payload.get("data", [])
 
+    #產生「給顧客看的最終回覆」。
+    #它會根據使用者訊息、意圖判定、FAQ 檢索內容、訂單資訊、歷史對話、是否要轉人工、對話模式，組出 prompt 並呼叫 OpenAI。
+    #如果 conversation_mode == "friendly_chat"，語氣會更像朋友聊天。
+    #否則會用比較像真人客服的語氣。
+    #如果 session 裡有上一輪的 response_id，也會帶上去，讓上下文更連續。
+    #最後會從 API 回應裡把文字抽出來回傳。
     def generate_customer_reply(self, *, message, intent, results, escalate, session, history_context, rag_context, order_context, conversation_mode):
         if not self.is_enabled():
             return None
@@ -184,6 +208,11 @@ class OpenAIService:
 
         raise RuntimeError("OpenAI API returned no text output.")
 
+    #產生「給真人客服接手用」的輔助內容。
+    #輸出重點是兩部分：
+    #案件摘要 summary
+    #建議直接回覆顧客的文字 suggested_reply
+    #它會把工單、session 歷史、FAQ 內容送給模型，要求模型用固定格式回傳，再用 regex 解析出兩段內容。
     def generate_staff_assistance(self, *, ticket, session_history, faq_context):
         if not self.is_enabled():
             return None

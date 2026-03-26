@@ -163,9 +163,9 @@ function renderOpenAIRuntime(runtime = {}) {
     return;
   }
 
-  openaiHealthPill.textContent = "待使用";
-  setPillTone(openaiHealthPill, "");
-  openaiHealthMessage.textContent = "OpenAI 已啟用，但目前還沒有可判讀的請求紀錄。等顧客發問或重建向量索引後，這裡會更新狀態。";
+  openaiHealthPill.textContent = "正常";
+  setPillTone(openaiHealthPill, "success");
+  openaiHealthMessage.textContent = "OpenAI 已啟用，目前還沒有錯誤紀錄。等顧客發問或重建向量索引後，這裡會更新最近一次請求資訊。";
 }
 
 async function readJson(response) {

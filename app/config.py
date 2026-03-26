@@ -1,15 +1,15 @@
-import os
-from dataclasses import dataclass
-from pathlib import Path
+import os #操作環境變數
+from dataclasses import dataclass #讓class自動擁有初始化等功能
+from pathlib import Path #用物件的方式處理路徑，較安全也好讀
 
 
-def load_dotenv_file(dotenv_path: Path):
-    if not dotenv_path.exists():
+def load_dotenv_file(dotenv_path: Path): #讀取.env
+    if not dotenv_path.exists(): #如果檔案不存在，就直接結束
         return
 
-    for raw_line in dotenv_path.read_text(encoding="utf-8").splitlines():
-        line = raw_line.strip()
-        if not line or line.startswith("#") or "=" not in line:
+    for raw_line in dotenv_path.read_text(encoding="utf-8").splitlines(): #用UTF-8編碼讀取檔案，然後逐行處理
+        line = raw_line.strip() #去掉行首行尾的空白
+        if not line or line.startswith("#") or "=" not in line: #如果是空行、註解行（以#開頭）或不包含=的行，就跳過
             continue
 
         key, value = line.split("=", 1)
