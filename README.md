@@ -24,17 +24,17 @@ source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
-3. 複製環境變數檔
+3. 打開 `.env.example`，把下面這行改成自己的 OpenAI API key
+
+```env
+OPENAI_API_KEY=your_openai_api_key
+```
+4. 複製環境變數檔
 
 ```bash
 cp .env.example
 ```
 
-4. 打開 `.env`，把下面這行改成自己的 OpenAI API key
-
-```env
-OPENAI_API_KEY=your_openai_api_key
-```
 
 也就是說，請把 `your_openai_api_key` 換成自己的 key。若不更換，OpenAI 問答與 embedding 不會正常工作。
 
